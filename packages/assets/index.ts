@@ -1,4 +1,5 @@
 // NOTE: re-export using consts to help TypeScript resolve the proper type
+// noinspection JSUnusedGlobalSymbols
 
 // Branding
 import _ModrinthIcon from './branding/logo.svg?component'
@@ -108,6 +109,7 @@ import _MailIcon from './icons/mail.svg?component'
 import _ManageIcon from './icons/manage.svg?component'
 import _MaximizeIcon from './icons/maximize.svg?component'
 import _MessageIcon from './icons/message.svg?component'
+import _MessageSquareWarningIcon from './icons/message-square-warning.svg?component'
 import _MicrophoneIcon from './icons/microphone.svg?component'
 import _MinimizeIcon from './icons/minimize.svg?component'
 import _MinusIcon from './icons/minus.svg?component'
@@ -117,6 +119,7 @@ import _MoonIcon from './icons/moon.svg?component'
 import _MoreHorizontalIcon from './icons/more-horizontal.svg?component'
 import _MoreVerticalIcon from './icons/more-vertical.svg?component'
 import _NewspaperIcon from './icons/newspaper.svg?component'
+import _OctogonAlertIcon from './icons/octogon-alert.svg?component'
 import _OmorphiaIcon from './icons/omorphia.svg?component'
 import _OrganizationIcon from './icons/organization.svg?component'
 import _PackageIcon from './icons/package.svg?component'
@@ -156,6 +159,7 @@ import _TagsIcon from './icons/tags.svg?component'
 import _TerminalSquareIcon from './icons/terminal-square.svg?component'
 import _TransferIcon from './icons/transfer.svg?component'
 import _TrashIcon from './icons/trash.svg?component'
+import _TriangleAlertIcon from './icons/triangle-alert.svg?component'
 import _UndoIcon from './icons/undo.svg?component'
 import _RedoIcon from './icons/redo.svg?component'
 import _UnknownIcon from './icons/unknown.svg?component'
@@ -302,6 +306,7 @@ export const MailIcon = _MailIcon
 export const ManageIcon = _ManageIcon
 export const MaximizeIcon = _MaximizeIcon
 export const MessageIcon = _MessageIcon
+export const MessageSquareWarningIcon = _MessageSquareWarningIcon
 export const MicrophoneIcon = _MicrophoneIcon
 export const MinimizeIcon = _MinimizeIcon
 export const MinusIcon = _MinusIcon
@@ -311,6 +316,7 @@ export const MoonIcon = _MoonIcon
 export const MoreHorizontalIcon = _MoreHorizontalIcon
 export const MoreVerticalIcon = _MoreVerticalIcon
 export const NewspaperIcon = _NewspaperIcon
+export const OctogonAlertIcon = _OctogonAlertIcon
 export const OmorphiaIcon = _OmorphiaIcon
 export const OrganizationIcon = _OrganizationIcon
 export const PackageIcon = _PackageIcon
@@ -350,6 +356,7 @@ export const TagsIcon = _TagsIcon
 export const TerminalSquareIcon = _TerminalSquareIcon
 export const TransferIcon = _TransferIcon
 export const TrashIcon = _TrashIcon
+export const TriangleAlertIcon = _TriangleAlertIcon
 export const UndoIcon = _UndoIcon
 export const RedoIcon = _RedoIcon
 export const UnknownIcon = _UnknownIcon

@@ -1,7 +1,15 @@
+import {
+  InfoIcon,
+  LightBulbIcon,
+  MessageSquareWarningIcon,
+  OctogonAlertIcon,
+  TriangleAlertIcon,
+} from '@modrinth/assets/raw'
 import MarkdownIt from 'markdown-it'
-import { escapeAttrValue, FilterXSS, safeAttrValue, whiteList } from 'xss'
+import MarkdownItGitHubAlerts from 'markdown-it-github-alerts'
+import { escapeAttrValue, FilterXSS, safeAttrValue, whiteList, IFilterXSSOptions } from 'xss'
 
-export const configuredXss = new FilterXSS({
+const defaultFilter: IFilterXSSOptions = {
   whiteList: {
     ...whiteList,
     summary: [],
@@ -123,7 +131,64 @@ export const configuredXss = new FilterXSS({
 
     return safeAttrValue(tag, name, value, cssFilter)
   },
-})
+}
+
+const alertFilter: IFilterXSSOptions = {
+  ...defaultFilter,
+  whiteList: {
+    ...defaultFilter.whiteList,
+    svg: [
+      'aria-hidden',
+      'width',
+      'height',
+      'viewBox',
+      'fill',
+      'stroke',
+      'stroke-width',
+      'stroke-linecap',
+      'stroke-linejoin',
+    ],
+    path: ['d'],
+    circle: ['cx', 'cy', 'r'],
+    line: ['x1', 'x2', 'y1', 'y2'],
+  },
+  onIgnoreTagAttr: (tag, name, value, isWhiteAttr) => {
+    const defaultResult = defaultFilter.onIgnoreTagAttr!(tag, name, value, isWhiteAttr);
+    if (typeof defaultResult === "string") {
+      return defaultResult
+    }
+
+    // For markdown callouts
+    if (name === 'class' && ['div', 'p'].includes(tag)) {
+      const classWhitelist = [
+        'markdown-alert',
+        'markdown-alert-note',
+        'markdown-alert-tip',
+        'markdown-alert-warning',
+        'markdown-alert-important',
+        'markdown-alert-caution',
+        'markdown-alert-title',
+      ]
+
+      const allowed: string[] = []
+      for (const className of value.split(/\s/g)) {
+        if (classWhitelist.includes(className)) {
+          allowed.push(className)
+        }
+      }
+
+      return `${name}="${escapeAttrValue(allowed.join(' '))}"`
+    }
+  }
+}
+
+// More strictly sanitize raw HTML on the Markdown
+const strictXss = new FilterXSS(defaultFilter)
+/*
+Use a filter that allows SVG and some classes to allow the alert icons and styles to render
+The more strict filter is used on html blocks and inline in the main markdown
+*/
+export const configuredXss = new FilterXSS(alertFilter)
 
 export const md = (options = {}) => {
   const md = new MarkdownIt('default', {
@@ -131,6 +196,39 @@ export const md = (options = {}) => {
     linkify: true,
     breaks: false,
     ...options,
+  })
+
+  // More strictly sanitize raw HTML on the Markdown
+  const defaultHtmlBlockRenderer =
+    md.renderer.rules.html_block ||
+    function (tokens, idx) {
+      return tokens[idx].content
+    }
+
+  md.renderer.rules.html_block = function (tokens, idx, options, env, slf) {
+    const original = defaultHtmlBlockRenderer(tokens, idx, options, env, slf)
+    return strictXss.process(original)
+  }
+
+  const defaultHtmlInlineRenderer =
+    md.renderer.rules.html_inline ||
+    function (tokens, idx) {
+      return tokens[idx].content
+    }
+
+  md.renderer.rules.html_inline = function (tokens, idx, options, env, slf) {
+    const original = defaultHtmlInlineRenderer(tokens, idx, options, env, slf)
+    return strictXss.process(original)
+  }
+
+  md.use(MarkdownItGitHubAlerts, {
+    icons: {
+      note: InfoIcon,
+      tip: LightBulbIcon,
+      important: MessageSquareWarningIcon,
+      warning: TriangleAlertIcon,
+      caution: OctogonAlertIcon,
+    },
   })
 
   const defaultLinkOpenRenderer =
